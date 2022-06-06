@@ -20,28 +20,8 @@
                             </figure>
                         </div>
                     </div>
-                    <div class="item">
-                        <div class="active text-center">
-                            <figure>
-                                <img src="{{url_for('static',filename='product_pics/' + products.image_3)}}" alt="{{products.name}}" width="945" height="945">
-                            </figure>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <div class="active text-center">
-                            <figure>
-                                <img src="{{url_for('static',filename='product_pics/' + products.image_4)}}" alt="{{products.name}}" width="945" height="945">
-                            </figure>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <div class="active text-center">
-                            <figure>
-                                <img src="{{url_for('static',filename='product_pics/' + products.image_5)}}" alt="{{products.name}}" width="945" height="945">
-                            </figure>
-                        </div>
-                    </div>
                 </div>
+
                 <div class="row animate-box">
                     <div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
                         <h2>{{ products.name }}</h2>
@@ -71,13 +51,8 @@
                         <div class="fh5co-tab-content tab-content active" data-tab-content="1">
                             <div class="col-md-10 col-md-offset-1">
                                 <span class="price">SGD{{ products.price }}</span>
-                                <p> Pieces available: {{ products.stock }} </p>
                                 <h2>{{ products.name }}</h2>
                                 <p> {{ products.description }} </p>
-                                <u><h3>Measurements</h3></u>
-                                <p>Length: {{products.length}} cm</p>
-                                <p>Width: {{products.width}} cm</p>
-                                <p>Depth: {{products.depth}} cm</p>
                             </div>
                         </div>
 
