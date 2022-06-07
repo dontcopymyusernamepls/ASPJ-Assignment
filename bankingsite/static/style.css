@@ -1751,8 +1751,8 @@ h1, h2, h3, h4, h5, h6, figure {
   position: absolute;
   margin-left: auto;
   margin-right: auto;
-  left: 1000px;
-  top: 700px; 
+  left: 900px;
+  top: 800px; 
 }
 
 .input-wrapper {
