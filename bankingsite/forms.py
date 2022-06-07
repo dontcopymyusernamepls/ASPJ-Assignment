@@ -11,6 +11,7 @@ from flask_login import current_user
 from wtforms import SubmitField, IntegerField, FloatField, StringField, TextAreaField, validators, SelectField, BooleanField
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 
+
 class RegistrationForm(FlaskForm):
     first_name = StringField('First Name', validators=[DataRequired()])
     last_name = StringField('Last Name', validators=[DataRequired()])
