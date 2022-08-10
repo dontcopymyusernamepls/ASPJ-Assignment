@@ -17,7 +17,7 @@ class RegistrationForm(FlaskForm):
     last_name = StringField('Last Name', validators=[DataRequired()])
     username =  StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
     email = StringField('Email', validators=[DataRequired(), Email()])
-    password = StringField('Password', validators=[DataRequired()])
+    password = StringField('Password', validators=[DataRequired(), Length(min=8)])
     confirm_password = StringField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Register')
 
@@ -31,11 +31,19 @@ class RegistrationForm(FlaskForm):
         if user:
             raise ValidationError('email is taken.')
 
+
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired()])
     password = StringField('Password', validators=[DataRequired()])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
+    
+    def validate_email(self, email):
+        allowed_chars = '1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM@!#$^&()[]<>.,:`~'
+        chars = list(email.data)
+        for char in chars:
+            if char not in allowed_chars:
+                raise ValidationError('Character {} is not allowed.'.format(char))
 
 class UpdateUserAccountForm(FlaskForm):
     first_name = StringField('First Name', validators=[DataRequired()])
@@ -66,7 +74,7 @@ class RequestResetForm(FlaskForm):
             raise ValidationError(f'There is no account named {email.data}.')
 
 class ResetPasswordForm(FlaskForm):
-    password = StringField('Password', validators=[DataRequired()])
+    password = StringField('Password', validators=[DataRequired(), Length(min=8)])
     confirm_password = StringField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Reset Password')
 
@@ -107,7 +115,7 @@ class AdminRegisterForm(FlaskForm):
     last_name = StringField('Last Name', validators=[DataRequired()])
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
     email  = StringField('Email',validators=[DataRequired(), Email()])
-    password = PasswordField('Password',validators=[DataRequired()])
+    password = PasswordField('Password',validators=[DataRequired(), Length(min=8)])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Sign Up')
 
@@ -130,6 +138,14 @@ class AddReviewForm(FlaskForm):
     rating = SelectField('Product Rating', choices=[(1, '1 Star'), (2, '2 Star'), (3, '3 Star'), (4, '4 Star'), (5, '5 Star')])
     submit = SubmitField('Submit')
 
+    def validate_review(self, review):
+        allowed_chars = '1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM@!#$^&()[]<>.,:`~'
+        chars = list(review.data)
+        for char in chars:
+            if char not in allowed_chars:
+                raise ValidationError('Character {} is not allowed.'.format(char))
+
+    
 class CheckOutForm(FlaskForm):
     full_name =  StringField('Full Name', validators=[DataRequired()])
     address = TextAreaField('Address', validators=[DataRequired()])

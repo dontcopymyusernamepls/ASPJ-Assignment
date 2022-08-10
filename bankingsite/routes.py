@@ -1,6 +1,12 @@
+import email
+from multiprocessing import connection
 import secrets, os
+import sqlite3
+from tkinter.tix import Select
+from unittest import result
 from PIL import Image
 from flask import render_template, url_for, flash, redirect, request, abort, session, current_app
+import sqlalchemy
 from bankingsite import app, bcrypt, db, mail
 from bankingsite.forms import (LoginForm, RegistrationForm, UpdateUserAccountForm, AddproductForm, AdminRegisterForm, 
                                 AddReviewForm, CheckOutForm, UpdateProductForm, RequestResetForm, ResetPasswordForm)
@@ -15,6 +21,7 @@ import plotly.graph_objs as go
 import pandas as pd
 import numpy as np
 from flask_mail import Message
+
 
 def trunc_datetime(someDate):
     return someDate.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
@@ -39,7 +46,14 @@ def page_not_found(e):
     # note that we set the 404 status explicitly
     return render_template('error/404.html'), 404
 
+@app.errorhandler(500)
+def internal_server_error(e):
+    # note that we set the 500 status explicitly
+    return render_template('error/500.html'), 500
+
+
 #--------------------LOGIN-LOGOUT-REGISTER-PAGE--------------------------#
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -52,6 +66,7 @@ def login():
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user)
             next = request.args.get('next')
+            
             return redirect(next) if next else redirect(url_for('home'))
 
         else:
@@ -60,7 +75,7 @@ def login():
 
     return render_template('login.html', title='Login',form=form)
 
-
+    
 @app.route('/logout')
 def logout():
     logout_user()
