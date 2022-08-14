@@ -6,11 +6,14 @@ from flask_migrate import Migrate
 from flask_msearch import Search
 from flask_mail import Mail
 import os
+from datetime import timedelta
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'this-is-secret-key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+app.config['USE_SESSION_FOR_NEXT'] = True
+app.config['REMEMBER_COOKIE_DURATION'] = timedelta(seconds=20)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)

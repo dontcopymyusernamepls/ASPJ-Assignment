@@ -138,5 +138,11 @@ class Customer_Payments(db.Model):
     address = db.Column(db.Text, nullable = False)
     postal_code = db.Column(db.Integer, nullable = False)
 
+class de_Customer_Payments(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    de_full_name = db.Column(db.String(80), nullable = False)
+    de_address = db.Column(db.Text, nullable = False)
+    postal_code = db.Column(db.Integer, nullable = False)
+    
 db.create_all()
 

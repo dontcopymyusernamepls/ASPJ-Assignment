@@ -1,3 +1,4 @@
+import imp
 import email
 from multiprocessing import connection
 import secrets, os
@@ -10,7 +11,7 @@ import sqlalchemy
 from bankingsite import app, bcrypt, db, mail
 from bankingsite.forms import (LoginForm, RegistrationForm, UpdateUserAccountForm, AddproductForm, AdminRegisterForm, 
                                 AddReviewForm, CheckOutForm, UpdateProductForm, RequestResetForm, ResetPasswordForm)
-from bankingsite.database import Staff, Users, User, Addproducts, Category, Items_In_Cart, Review, Customer_Payments, Product_Bought
+from bankingsite.database import Staff, Users, User, Addproducts, Category, Items_In_Cart, Review, Customer_Payments, Product_Bought, de_Customer_Payments
 from flask_login import login_user, current_user, logout_user, login_required
 from sqlalchemy import extract
 from functools import wraps
@@ -21,7 +22,8 @@ import plotly.graph_objs as go
 import pandas as pd
 import numpy as np
 from flask_mail import Message
-
+from flask import Flask, request, escape
+import bankingsite.MyCaesarcipher as cipher
 
 def trunc_datetime(someDate):
     return someDate.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
@@ -66,7 +68,7 @@ def login():
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user)
             next = request.args.get('next')
-            
+  
             return redirect(next) if next else redirect(url_for('home'))
 
         else:
@@ -327,11 +329,18 @@ def checkout_details():
     
     total = subtotal + 10
     if form.validate_on_submit():
-        full_name = form.full_name.data
-        address = form.address.data
-        postal_code = form.postal_code.data
-        checkout_details = Customer_Payments(full_name=full_name, address=address, postal_code=postal_code)
+        en_full_name = cipher.encrypt(3,form.full_name.data)
+        en_address = cipher.encrypt(3,form.address.data)
+        hash_postal_code = bcrypt.generate_password_hash(form.postal_code.data).decode('utf-8')
+        checkout_details = Customer_Payments(full_name=en_full_name, address=en_address, postal_code=hash_postal_code)
         db.session.add(checkout_details)
+
+        de_full_name = form.full_name.data
+        de_address = form.address.data
+        postal_code = form.postal_code.data
+        checkout_details = de_Customer_Payments(de_full_name=de_full_name, de_address=de_address, postal_code=postal_code)
+        db.session.add(checkout_details)
+        
         for cart_item in cart_items:
             product = Addproducts.query.filter_by(id=cart_item.product_id).first()
             product.stock = product.stock - cart_item.quantity
