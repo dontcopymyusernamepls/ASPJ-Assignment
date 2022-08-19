@@ -39,7 +39,7 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Login')
     
     def validate_email(self, email):
-        allowed_chars = '1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM@!#$^&()[]<>.,:`~'
+        allowed_chars = '1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM@!#$%^*&?()[]<>.,:`~'
         chars = list(email.data)
         for char in chars:
             if char not in allowed_chars:
@@ -139,7 +139,7 @@ class AddReviewForm(FlaskForm):
     submit = SubmitField('Submit')
 
     def validate_review(self, review):
-        allowed_chars = '1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM@!#$^&()[]<>.,:`~'
+        allowed_chars = '1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM@!#$%^*&?()[]<>.,:`~'
         chars = list(review.data)
         for char in chars:
             if char not in allowed_chars:

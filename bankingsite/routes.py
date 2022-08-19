@@ -24,6 +24,7 @@ import numpy as np
 from flask_mail import Message
 from flask import Flask, request, escape
 import bankingsite.MyCaesarcipher as cipher
+from bankingsite.limiter import limiter
 
 def trunc_datetime(someDate):
     return someDate.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
@@ -58,12 +59,15 @@ def internal_server_error(e):
 
 
 @app.route('/login', methods=['GET', 'POST'])
+@limiter.limit("5/Second")
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('home'))
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
+
+        app.logger.info(f"Logged in user: {user.email}")
 
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user)
@@ -79,6 +83,7 @@ def login():
 
     
 @app.route('/logout')
+@limiter.limit("5/Second")
 def logout():
     logout_user()
     return redirect(url_for('home'))
@@ -503,8 +508,8 @@ def delete_product(id):
  
 
 @app.route('/admin/admin_register', methods=['GET','POST'])
-#@login_required
-#@admin_required
+@login_required
+@admin_required
 def admin_register():
     form = AdminRegisterForm()
     if form.validate_on_submit():
